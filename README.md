@@ -2,5 +2,5 @@
 A collection of ROS2-related cheats sheet
 
 ### Cheats Sheet list
-*   [Command Line Interface](cli/cli_cheats_sheet_sort.pdf)
+*   [Command Line Interface](cli/cli_cheats_sheet_short.pdf)
 *   [Colcon](colcon/colcon_cheats_sheet.pdf)
