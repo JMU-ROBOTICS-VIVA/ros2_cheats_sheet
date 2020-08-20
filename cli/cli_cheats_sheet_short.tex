@@ -1,0 +1,326 @@
+\documentclass[9pt,a4paper]{article}
+\usepackage[margin=1cm,landscape]{geometry}
+\usepackage[T1]{fontenc}
+\geometry{
+  a4paper,
+  left=10mm,
+  right=10mm,
+  headheight=1cm,
+  top=1cm,
+  bottom=1.5cm,
+  footskip=1cm,
+  %showframe
+}
+
+%\usepackage{lipsum}
+
+\usepackage{hyperref} % For hyperlinks
+\hypersetup{
+    colorlinks=true,
+    %linkcolor=blue,
+    %filecolor=magenta,
+    urlcolor=cyan,
+}
+
+\usepackage{multicol} % For overall column layout
+\usepackage{xcolor} % For colors
+\usepackage{tabularx}
+\usepackage{fancyhdr} % For footer
+
+\pagenumbering{gobble} % No page numbering
+\pagestyle{fancy}
+\fancyhead{} % No header
+\renewcommand{\headrulewidth}{0pt} % No header rule
+
+\cfoot{\copyright~2019 Canonical} % Actual footer text
+
+% A bunch of command for boilerplate text
+\newcommand{\clicmd}[1]{\textbf{\sffamily\color{blue}#1}~~}
+\newcommand{\cliverb}[1]{{\sffamily\color{blue}#1}~~}
+\newcommand{\cliopt}[1]{{\sffamily#1}~~}
+\newcommand{\textangles}[1]{\textless #1\textgreater}
+\newcommand{\smallhspace}{\-\hspace{0.3cm}}
+\newcommand{\terminal}[1]{\-\hspace{0.5cm}{\sffamily\$ #1}}
+\newcommand{\terminalinebreak}[1]{\ \textbackslash\hfill\phantom{.}\linebreak\-\hspace{0.5cm}~}
+\newcommand{\ddash}{-{}-}
+\newcommand{\deprecated}[1]{{\color{orange}(deprecated)#1}}
+
+\begin{document}
+\setlength\parindent{0pt}
+\begin{multicols*}{3}[]
+
+\begin{center}
+  \textbf{\Large ROS 2 Cheat Sheet}
+\end{center}
+%
+
+\hrulefill
+
+\textbf{Command Line Interface}
+
+%
+All ROS 2 CLI tools start with the prefix `ros2' followed by a command,
+a verb and (possibly) positional/optional arguments.
+
+For any tool, the documentation is accessible with,\\
+%
+\terminal{ros2 \clicmd{command} \ddash help}\\
+%
+and similarly for verb documentation,\\
+%
+\terminal{ros2 \clicmd{command} \cliverb{verb} -h}
+
+Similarly, auto-completion is available for all commands/verbs and
+most positional/optional arguments. E.g.,\\
+%
+\terminal{ros2 \clicmd{command} [tab][tab]}
+
+Some of the examples below rely on:\\
+\href{https://github.com/ros2/demos}{ROS 2 demos package}.
+
+\hrulefill
+
+%
+\clicmd{action} Allows to manually send a goal and
+displays debugging information about actions.
+\\
+Verbs:
+\\
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{info}        & Output information about an action. \\
+\smallhspace \cliverb{list}        & Output a list of action names.      \\
+\smallhspace \cliverb{send\_goal}  & Send an action goal.                \\
+\smallhspace \cliverb{show}        &  Output the action definition.
+\end{tabularx}
+%
+Examples:
+\\
+\terminal{ros2 action info /fibonacci} \\
+\terminal{ros2 action list} \\
+\terminal{ros2 action send\_goal /fibonacci
+\terminalinebreak~action\_tutorials/action/Fibonacci "{order: 5}"} \\
+\terminal{ros2 action show action\_tutorials/action/Fibonacci}
+
+\vspace*{.2in}
+\hrulefill
+
+%
+\clicmd{bag} Allows to record/play topics to/from a rosbag.
+\\
+Verbs:
+\\
+%
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{info}      & Output information of a bag.\\
+\smallhspace \cliverb{play}      & Play a bag.\\
+\smallhspace \cliverb{record}    & Record a bag.
+\end{tabularx}
+%
+\\
+Examples:
+\\
+\terminal{ros2 info \textangles{bag-name}}\\
+\terminal{ros2 play \textangles{bag-name}}\\
+\terminal{ros2 record -a}
+%
+
+\vfill\null
+\columnbreak
+
+\hrulefill
+
+%
+\clicmd{launch} Allows to run a launch file in an arbitrary package
+without to `cd' there first.
+\\
+Usage:
+\\
+\terminal{ros2 launch \textangles{package}~\textangles{launch-file}}
+\\
+Example:
+\\
+\terminal{ros2 launch demo\_nodes\_cpp add\_two\_ints.launch.py}
+%
+
+\vspace*{.2in}
+\hrulefill
+
+%
+\clicmd{msg} Displays debugging information about messages.
+\\
+Verbs:
+\\
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{list}      & Output a list of message types.                           \\
+\smallhspace \cliverb{package}   & Output a list of message types within a given package.    \\
+\smallhspace \cliverb{packages}  & Output a list of packages which contain messages.         \\
+\smallhspace \cliverb{show}      & Output the message definition.
+\end{tabularx}
+%
+Examples:
+\\
+\terminal{ros2 msg list} \\
+\terminal{ros2 msg package std\_msgs} \\
+\terminal{ros2 msg packages} \\
+\terminal{ros2 msg show geometry\_msgs/msg/Pose}
+%
+
+
+\vspace*{.2in}
+\hrulefill
+
+%
+\clicmd{node} Displays debugging information about nodes.
+\\
+Verbs:
+\\
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{info}   & Output information about a node. \\
+\smallhspace \cliverb{list}   & Output a list of available nodes.
+\end{tabularx}
+%
+Examples:
+\\
+\terminal{ros2 node info /talker} \\
+\terminal{ros2 node list}
+%
+
+\vfill\null
+\columnbreak
+
+\hrulefill
+
+%
+\clicmd{param} Allows to manipulate parameters.
+\\
+Verbs:
+\\
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{delete}    & Delete parameter.                         \\
+\smallhspace \cliverb{get}       & Get parameter.                            \\
+\smallhspace \cliverb{list}      & Output a list of available parameters.    \\
+\smallhspace \cliverb{set}       & Set parameter
+\end{tabularx}
+%
+Examples:
+\\
+\terminal{ros2 param delete /talker /use\_sim\_time}    \\
+\terminal{ros2 param get /talker /use\_sim\_time}       \\
+\terminal{ros2 param list}                              \\
+\terminal{ros2 param set /talker /use\_sim\_time false}
+%
+
+\vspace*{.2in}
+\hrulefill
+
+%
+\clicmd{pkg} Create a ros2 package or output package(s)-related information.
+\\
+Verbs:
+\\
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{create}        &  Create a new ROS2 package.                       \\
+\smallhspace \cliverb{executables}   &  Output a list of package specific executables.   \\
+\smallhspace \cliverb{list}          &  Output a list of available packages.             \\
+\smallhspace \cliverb{prefix}        &  Output the prefix path of a package.             \\
+\end{tabularx}
+%
+Examples:
+\\
+\terminal{ros2 pkg executables demo\_nodes\_cpp}    \\
+\terminal{ros2 pkg list}                            \\
+\terminal{ros2 pkg prefix std\_msgs}                \\
+%
+
+
+\hrulefill
+
+%
+\clicmd{run} Allows to run an executable in an arbitrary package
+without having to `cd' there first.
+\\
+Usage:
+\\
+\terminal{ros2 run \textangles{package}~\textangles{executable}}
+\\
+Example:
+\\
+\terminal{ros2 run demo\_nodes\_cpp talker}
+%
+
+\vfill\null
+\columnbreak
+
+\hrulefill
+
+%
+\clicmd{service} Allows to manually call a service and displays debugging
+information about services.
+\\
+Verbs:
+\\
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{call}   & Call a service.                            \\
+\smallhspace \cliverb{list}   & Output a list of service names.            \\
+\end{tabularx}
+%
+Examples:
+\\
+\terminal{ros2 service call /add\_two\_ints
+\terminalinebreak~example\_interfaces/AddTwoInts "\{a: 1, b: 2}\}"  \\
+\terminal{ros2 service list}                                      \\
+%
+
+\vspace*{.2in}
+\hrulefill
+
+%
+\clicmd{srv} Various srv related verbs.
+\\
+Verbs:
+\\
+%
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{list}      & Output a list of available service types.\\
+\smallhspace \cliverb{package}   & Output a list of available service types within one package.\\
+\smallhspace \cliverb{packages}  & Output a list of packages which contain services.\\
+\smallhspace \cliverb{show}      & Output the service definition.
+\end{tabularx}
+%
+
+
+\vfill\null
+\columnbreak
+\hrulefill
+
+%
+\clicmd{topic} A tool for displaying debug information about ROS topics,
+including publishers, subscribers, publishing rate, and
+messages.
+\\
+Verbs:
+\\
+%
+\begin{tabularx}{\linewidth}{lX}
+\smallhspace \cliverb{bw}    & Display bandwidth used by topic.                  \\
+\smallhspace \cliverb{delay} & Display delay of topic from timestamp in header.  \\
+\smallhspace \cliverb{echo}  & Output messages of a given topic to screen.       \\
+\smallhspace \cliverb{hz}    & Display publishing rate of topic.                 \\
+\smallhspace \cliverb{info}  & Output information about a given topic.           \\
+\smallhspace \cliverb{list}  & Output list of active topics.                     \\
+\smallhspace \cliverb{pub}   & Publish data to a topic.                          \\
+\end{tabularx}
+%
+Examples:
+\\
+\terminal{ros2 topic bw /chatter}                         \\
+\terminal{ros2 topic echo /chatter}                       \\
+\terminal{ros2 topic hz /chatter}                         \\
+\terminal{ros2 topic info /chatter}                       \\
+\terminal{ros2 topic list}                                \\
+\terminal{ros2 topic pub /chatter std\_msgs/msg/String
+\terminalinebreak~'data: Hello ROS 2 world'}              \\
+\terminal{ros2 topic type /rosout}                        \\
+
+\end{multicols*}
+\end{document}
